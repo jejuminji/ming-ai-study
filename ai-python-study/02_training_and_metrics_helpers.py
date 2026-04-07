@@ -1,0 +1,163 @@
+# 이 파일은 학습 루프와 평가 단계에서 자주 보이는 함수를 모아 둔 학습용 파일이다.
+
+# 로그 계산을 위해 math 모듈을 가져온다.
+import math
+
+# 타입 힌트를 위해 typing 도구를 가져온다.
+from typing import Dict, List, Sequence, Tuple
+
+
+# 이 함수는 이진 분류에서 sigmoid 출력 확률에 대한 binary cross entropy 를 계산한다.
+def binary_cross_entropy(probability: float, target: int, epsilon: float = 1e-12) -> float:
+    # target 이 0 또는 1 이 아니면 이진 분류 타깃으로 보기 어렵기 때문에 예외를 발생시킨다.
+    if target not in (0, 1):
+        raise ValueError("target must be 0 or 1.")
+
+    # log(0)을 피하기 위해 probability 를 아주 작은 범위 안으로 잘라 준다.
+    clipped_probability = min(max(probability, epsilon), 1 - epsilon)
+
+    # binary cross entropy 공식을 그대로 적용한다.
+    loss = -(
+        target * math.log(clipped_probability)
+        + (1 - target) * math.log(1 - clipped_probability)
+    )
+
+    # 계산된 손실 값을 반환한다.
+    return loss
+
+
+# 이 함수는 softmax 확률 벡터와 정답 인덱스를 받아 cross entropy 를 계산한다.
+def multiclass_cross_entropy(probabilities: Sequence[float], target_index: int, epsilon: float = 1e-12) -> float:
+    # 확률 리스트가 비어 있으면 계산할 수 없으므로 예외를 발생시킨다.
+    if len(probabilities) == 0:
+        raise ValueError("probabilities must not be empty.")
+
+    # 정답 인덱스가 범위를 벗어나면 잘못된 입력이므로 예외를 발생시킨다.
+    if not 0 <= target_index < len(probabilities):
+        raise ValueError("target_index is out of range.")
+
+    # 정답 클래스의 확률만 꺼낸다.
+    target_probability = probabilities[target_index]
+
+    # log(0)을 피하기 위해 확률을 살짝 잘라 준다.
+    clipped_probability = min(max(target_probability, epsilon), 1 - epsilon)
+
+    # 정답 클래스 확률의 음의 로그를 반환한다.
+    return -math.log(clipped_probability)
+
+
+# 이 함수는 분류 정확도를 계산한다.
+def accuracy_score(y_true: Sequence[int], y_pred: Sequence[int]) -> float:
+    # 정답과 예측 길이가 다르면 한 쌍씩 비교할 수 없으므로 예외를 발생시킨다.
+    if len(y_true) != len(y_pred):
+        raise ValueError("y_true and y_pred must have the same length.")
+
+    # 데이터가 없으면 정확도를 정의하기 애매하므로 예외를 발생시킨다.
+    if len(y_true) == 0:
+        raise ValueError("y_true must not be empty.")
+
+    # 같은 위치에서 정답과 예측이 맞은 개수를 센다.
+    correct_count = sum(1 for true_value, pred_value in zip(y_true, y_pred) if true_value == pred_value)
+
+    # 전체 개수로 나누면 정확도가 된다.
+    return correct_count / len(y_true)
+
+
+# 이 함수는 이진 분류용 confusion matrix 를 딕셔너리로 반환한다.
+def confusion_matrix_binary(y_true: Sequence[int], y_pred: Sequence[int], positive_label: int = 1) -> Dict[str, int]:
+    # 길이가 다르면 비교할 수 없으므로 예외를 발생시킨다.
+    if len(y_true) != len(y_pred):
+        raise ValueError("y_true and y_pred must have the same length.")
+
+    # confusion matrix 의 네 칸을 0으로 시작한다.
+    tp = fp = tn = fn = 0
+
+    # 정답과 예측을 한 쌍씩 보며 어느 칸에 들어가는지 센다.
+    for true_value, pred_value in zip(y_true, y_pred):
+        # 양성으로 예측했고 실제도 양성이면 true positive 다.
+        if pred_value == positive_label and true_value == positive_label:
+            tp += 1
+        # 양성으로 예측했지만 실제는 음성이면 false positive 다.
+        elif pred_value == positive_label and true_value != positive_label:
+            fp += 1
+        # 음성으로 예측했고 실제도 음성이면 true negative 다.
+        elif pred_value != positive_label and true_value != positive_label:
+            tn += 1
+        # 음성으로 예측했지만 실제는 양성이면 false negative 다.
+        else:
+            fn += 1
+
+    # 보기 쉬운 키 이름으로 결과를 반환한다.
+    return {"tp": tp, "fp": fp, "tn": tn, "fn": fn}
+
+
+# 이 함수는 precision, recall, F1 을 한 번에 계산한다.
+def precision_recall_f1(y_true: Sequence[int], y_pred: Sequence[int], positive_label: int = 1) -> Dict[str, float]:
+    # 먼저 confusion matrix 를 계산해 기본 재료를 만든다.
+    matrix = confusion_matrix_binary(y_true, y_pred, positive_label=positive_label)
+
+    # 분자를 꺼내 쓰기 쉽게 변수에 담는다.
+    tp = matrix["tp"]
+    fp = matrix["fp"]
+    fn = matrix["fn"]
+
+    # precision 은 양성이라고 한 것 중 실제 양성 비율이다.
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+
+    # recall 은 실제 양성 중 찾아낸 비율이다.
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+
+    # F1 은 precision 과 recall 의 조화평균이다.
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+
+    # 세 지표를 딕셔너리 형태로 묶어 반환한다.
+    return {"precision": precision, "recall": recall, "f1": f1}
+
+
+# 이 함수는 학습 중 손실이 좋아졌는지, patience 를 얼마나 쌓았는지 판단하는 단순 early stopping 헬퍼다.
+def update_early_stopping(
+    best_score: float,
+    current_score: float,
+    patience_counter: int,
+    mode: str = "max",
+    min_delta: float = 0.0,
+) -> Tuple[float, int, bool]:
+    # mode 는 max 또는 min 만 허용한다.
+    if mode not in ("max", "min"):
+        raise ValueError("mode must be 'max' or 'min'.")
+
+    # 개선 여부를 먼저 False 로 시작한다.
+    improved = False
+
+    # 성능이 클수록 좋은 상황이면 current_score 가 best_score 보다 충분히 커졌는지 본다.
+    if mode == "max":
+        improved = current_score > best_score + min_delta
+    # 손실처럼 작을수록 좋은 상황이면 current_score 가 best_score 보다 충분히 작아졌는지 본다.
+    else:
+        improved = current_score < best_score - min_delta
+
+    # 개선됐다면 best_score 를 갱신하고 patience 카운터를 0으로 되돌린다.
+    if improved:
+        return current_score, 0, True
+
+    # 개선되지 않았다면 patience 카운터를 1 늘린다.
+    return best_score, patience_counter + 1, False
+
+
+# 이 아래 코드는 파일을 직접 실행했을 때 동작하는 작은 예시다.
+if __name__ == "__main__":
+    # 예시용 정답과 예측을 만든다.
+    y_true_example = [1, 0, 1, 1, 0, 1]
+    y_pred_example = [1, 0, 0, 1, 0, 1]
+
+    # 정확도를 계산해서 출력한다.
+    print("accuracy:", accuracy_score(y_true_example, y_pred_example))
+
+    # precision, recall, f1 을 계산해서 출력한다.
+    print("metrics:", precision_recall_f1(y_true_example, y_pred_example))
+
+    # confusion matrix 도 함께 출력한다.
+    print("confusion_matrix:", confusion_matrix_binary(y_true_example, y_pred_example))
+
+    # early stopping 업데이트 예시를 실행한다.
+    print("early_stopping:", update_early_stopping(best_score=0.80, current_score=0.82, patience_counter=2))
