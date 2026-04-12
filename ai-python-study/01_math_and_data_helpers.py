@@ -7,12 +7,16 @@ import random
 import math
 
 # 이 모듈은 함수의 입력과 출력 타입을 읽기 좋게 적기 위해 typing 도구를 가져온다.
+# 예를 들어 Sequence 는 list, tuple, 문자열처럼 "순서가 있는 데이터 묶음"을 뜻한다.
 from typing import Iterable, Iterator, List, Sequence, Tuple
 
 
 # 이 함수는 실험을 다시 돌렸을 때 같은 결과가 나오도록 seed 를 고정한다.
+# seed 는 랜덤 숫자를 만들기 시작하는 "출발 번호"라고 생각하면 이해하기 쉽다.
+# 같은 seed 를 쓰면 컴퓨터가 같은 순서의 가짜 랜덤 값을 다시 만들어서 실험 비교가 쉬워진다.
 def set_seed(seed: int) -> None:
-    # random 모듈의 seed 를 고정하면 random.shuffle, random.random 같은 결과가 재현 가능해진다.
+    # random 모듈의 seed 를 고정하면 random.shuffle, random.random 같은 결과가 매번 같아져서
+    # 디버깅하거나 예제를 다시 확인할 때 훨씬 편해진다.
     random.seed(seed)
 
 
@@ -23,14 +27,18 @@ def train_val_split(
     shuffle: bool = True,
     seed: int = 42,
 ) -> Tuple[List, List]:
+    # 여기서 items 를 Sequence 로 적은 것은 list 뿐 아니라 tuple 같은
+    # "순서가 있는 데이터 묶음"도 받을 수 있다는 뜻이다.
+
     # validation 비율이 0보다 작거나 1보다 크면 잘못된 입력이므로 예외를 발생시킨다.
     if not 0 <= val_ratio <= 1:
         raise ValueError("val_ratio must be between 0 and 1.")
 
-    # 원본 시퀀스를 바로 바꾸지 않기 위해 list 로 복사본을 만든다.
+    # 원본 시퀀스(순서가 있는 데이터 묶음)를 바로 바꾸지 않기 위해 list 로 복사본을 만든다.
     copied_items = list(items)
 
     # 데이터 분할 전에 순서를 섞고 싶다면 seed 를 고정한 뒤 shuffle 한다.
+    # 같은 seed 로 섞으면 항상 같은 순서가 나오므로 train/validation 결과를 다시 재현할 수 있다.
     if shuffle:
         random.seed(seed)
         random.shuffle(copied_items)
@@ -47,6 +55,7 @@ def train_val_split(
 
 
 # 이 함수는 데이터를 batch_size 단위로 잘라서 순서대로 내보낸다.
+# batch 는 데이터를 한 번에 전부 넣지 않고 "작은 묶음"으로 나눈 것이라고 보면 된다.
 def batch_iterator(items: Sequence, batch_size: int) -> Iterator[List]:
     # batch 크기가 1보다 작으면 의미가 없으므로 예외를 발생시킨다.
     if batch_size < 1:
@@ -58,6 +67,7 @@ def batch_iterator(items: Sequence, batch_size: int) -> Iterator[List]:
         batch = list(items[start_index : start_index + batch_size])
 
         # 만들어진 배치를 하나씩 바깥으로 내보낸다.
+        # Iterator 는 이렇게 "한 묶음씩 차례대로 꺼내 쓰는 방식"을 뜻한다.
         yield batch
 
 
@@ -98,8 +108,10 @@ def cosine_similarity(vector_a: Sequence[float], vector_b: Sequence[float]) -> f
 
 
 # 이 함수는 입력값을 0과 1 사이로 눌러 주는 sigmoid 함수다.
+# S 자 모양 곡선을 써서 아무리 작은 음수나 큰 양수라도 0~1 사이 값으로 바꾼다.
 def sigmoid(x: float) -> float:
-    # sigmoid 는 이진 분류 출력층에서 자주 등장하며, 값을 확률처럼 해석하기 좋게 만든다.
+    # x 가 아주 작으면 0에 가깝고, x 가 0이면 0.5, x 가 아주 크면 1에 가까워진다.
+    # 그래서 "양성일 가능성"처럼 하나의 확률 비슷한 값으로 읽고 싶을 때 자주 쓴다.
     return 1 / (1 + math.exp(-x))
 
 
@@ -110,6 +122,8 @@ def relu(x: float) -> float:
 
 
 # 이 함수는 여러 점수(logit)를 확률 분포처럼 바꾸는 softmax 함수다.
+# logit 은 아직 확률이 아니라 모델이 낸 원점수다. softmax 는 이 점수들을 서로 비교해
+# "각 선택지가 얼마나 그럴듯한지"를 합이 1인 값들로 바꿔 준다.
 def softmax(logits: Sequence[float]) -> List[float]:
     # 빈 리스트가 들어오면 계산할 값이 없으므로 예외를 발생시킨다.
     if len(logits) == 0:
@@ -118,7 +132,7 @@ def softmax(logits: Sequence[float]) -> List[float]:
     # 수치적으로 더 안정적인 계산을 위해 가장 큰 값을 먼저 뺀다.
     max_logit = max(logits)
 
-    # 각 logit 에 exp 를 적용해서 양수 값으로 바꾼다.
+    # 각 logit 에 exp 를 적용해서 음수/양수가 섞인 원점수를 모두 양수 값으로 바꾼다.
     exp_values = [math.exp(logit - max_logit) for logit in logits]
 
     # exp 값의 총합을 구한다.
@@ -149,6 +163,7 @@ def min_max_normalize(values: Sequence[float]) -> List[float]:
 # 이 아래 코드는 이 파일을 직접 실행했을 때만 동작하는 간단한 사용 예시다.
 if __name__ == "__main__":
     # 재현 가능한 셔플 결과를 보기 위해 seed 를 고정한다.
+    # 즉, 이 파일을 여러 번 실행해도 섞이는 순서가 같게 만든다.
     set_seed(123)
 
     # 예시 데이터 리스트를 만든다.

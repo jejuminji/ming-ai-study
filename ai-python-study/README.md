@@ -12,6 +12,7 @@
 2. `02_training_and_metrics_helpers.py`
 3. `03_nlp_and_rag_helpers.py`
 4. `04_llm_prompt_helpers.py`
+5. `05_reinforcement_learning_helpers.py`
 
 ## 파일별 역할
 
@@ -21,6 +22,7 @@
 | `02_training_and_metrics_helpers.py` | loss, accuracy, precision, recall, F1, early stopping 같은 학습/평가 함수 |
 | `03_nlp_and_rag_helpers.py` | 텍스트 정규화, 토큰화, chunking, vocabulary, bag-of-words, 간단 검색 함수 |
 | `04_llm_prompt_helpers.py` | messages 만들기, few-shot 예시 포맷팅, RAG 프롬프트 생성, 간단 JSON 추출 함수 |
+| `05_reinforcement_learning_helpers.py` | discounted return, advantage, PPO clip objective, CQL conservative penalty 같은 RL 기초 예시 |
 
 ## 추천 학습 방법
 - 먼저 함수 이름만 훑지 말고 주석을 따라 한 줄씩 읽는다.

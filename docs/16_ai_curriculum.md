@@ -176,7 +176,7 @@ LLM을 이해하려면 그 전에 신경망이 어떻게 학습되는지 감이 
 - `examples/이미지 이해-03.py`
 - `examples/함수 호출-04.py`
 - `ai-python-study/README.md`
-- `ai-python-study/01~04` 파일
+- `ai-python-study/01~05` 파일
 
 #### 이 단계에서 이해해야 할 것
 - OpenAI API 예제 코드 흐름

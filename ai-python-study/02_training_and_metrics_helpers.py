@@ -4,11 +4,16 @@
 import math
 
 # 타입 힌트를 위해 typing 도구를 가져온다.
+# 여기서 Sequence 는 list, tuple처럼 순서가 있는 데이터 묶음을 뜻한다.
 from typing import Dict, List, Sequence, Tuple
 
 
 # 이 함수는 이진 분류에서 sigmoid 출력 확률에 대한 binary cross entropy 를 계산한다.
+# 쉽게 말해 "모델이 낸 확률이 정답과 얼마나 어긋났는지"를 숫자로 바꾸는 함수다.
 def binary_cross_entropy(probability: float, target: int, epsilon: float = 1e-12) -> float:
+    # probability 는 보통 sigmoid 를 통과한 뒤의 값이라서 0~1 사이에 있다.
+    # target 은 정답이 음성인지 양성인지만 나타내므로 0 또는 1 만 사용한다.
+
     # target 이 0 또는 1 이 아니면 이진 분류 타깃으로 보기 어렵기 때문에 예외를 발생시킨다.
     if target not in (0, 1):
         raise ValueError("target must be 0 or 1.")
@@ -16,7 +21,8 @@ def binary_cross_entropy(probability: float, target: int, epsilon: float = 1e-12
     # log(0)을 피하기 위해 probability 를 아주 작은 범위 안으로 잘라 준다.
     clipped_probability = min(max(probability, epsilon), 1 - epsilon)
 
-    # binary cross entropy 공식을 그대로 적용한다.
+    # 정답인데 낮은 확률을 줬거나, 오답인데 높은 확률을 주면 loss 가 크게 나온다.
+    # 즉 "확신을 가지고 틀릴수록" 더 크게 벌점을 준다고 이해하면 된다.
     loss = -(
         target * math.log(clipped_probability)
         + (1 - target) * math.log(1 - clipped_probability)
@@ -27,6 +33,7 @@ def binary_cross_entropy(probability: float, target: int, epsilon: float = 1e-12
 
 
 # 이 함수는 softmax 확률 벡터와 정답 인덱스를 받아 cross entropy 를 계산한다.
+# 여러 선택지 중 정답 칸에 모델이 얼마나 높은 확률을 줬는지 보고 손실을 계산한다.
 def multiclass_cross_entropy(probabilities: Sequence[float], target_index: int, epsilon: float = 1e-12) -> float:
     # 확률 리스트가 비어 있으면 계산할 수 없으므로 예외를 발생시킨다.
     if len(probabilities) == 0:
@@ -64,6 +71,7 @@ def accuracy_score(y_true: Sequence[int], y_pred: Sequence[int]) -> float:
 
 
 # 이 함수는 이진 분류용 confusion matrix 를 딕셔너리로 반환한다.
+# confusion matrix 는 예측 결과를 "맞춘 양성, 틀린 양성, 맞춘 음성, 놓친 양성"으로 나눠 세는 표다.
 def confusion_matrix_binary(y_true: Sequence[int], y_pred: Sequence[int], positive_label: int = 1) -> Dict[str, int]:
     # 길이가 다르면 비교할 수 없으므로 예외를 발생시킨다.
     if len(y_true) != len(y_pred):
@@ -92,6 +100,8 @@ def confusion_matrix_binary(y_true: Sequence[int], y_pred: Sequence[int], positi
 
 
 # 이 함수는 precision, recall, F1 을 한 번에 계산한다.
+# precision 은 "양성이라고 한 것의 정확도", recall 은 "실제 양성을 얼마나 놓치지 않았는지"를 본다.
+# F1 은 둘 중 하나만 좋다고 끝내지 않고, 두 값의 균형을 같이 보려는 지표다.
 def precision_recall_f1(y_true: Sequence[int], y_pred: Sequence[int], positive_label: int = 1) -> Dict[str, float]:
     # 먼저 confusion matrix 를 계산해 기본 재료를 만든다.
     matrix = confusion_matrix_binary(y_true, y_pred, positive_label=positive_label)
@@ -115,6 +125,7 @@ def precision_recall_f1(y_true: Sequence[int], y_pred: Sequence[int], positive_l
 
 
 # 이 함수는 학습 중 손실이 좋아졌는지, patience 를 얼마나 쌓았는지 판단하는 단순 early stopping 헬퍼다.
+# patience 는 "조금 흔들려도 몇 번까지는 더 기다려 볼지"를 나타내는 여유 횟수다.
 def update_early_stopping(
     best_score: float,
     current_score: float,
@@ -127,6 +138,7 @@ def update_early_stopping(
         raise ValueError("mode must be 'max' or 'min'.")
 
     # 개선 여부를 먼저 False 로 시작한다.
+    # early stopping 은 성능이 잠깐 출렁일 수 있다는 점을 고려해 한 번 나빠졌다고 바로 멈추지 않는다.
     improved = False
 
     # 성능이 클수록 좋은 상황이면 current_score 가 best_score 보다 충분히 커졌는지 본다.
