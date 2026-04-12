@@ -1,120 +1,170 @@
-# AI 공부와 개념 잡기
+<div align="center">
 
-AI를 처음 공부할 때 가장 어려운 점은 개념이 너무 많고, 서로 어떻게 연결되는지 감이 잘 안 잡힌다는 점입니다. 이 레포는 그 문제를 줄이기 위해 만든 개인 학습 저장소입니다. 머신러닝, 딥러닝, LLM, RAG, 에이전트 같은 핵심 개념을 "정의"보다 "관계" 중심으로 정리합니다.
+# AI Study
 
-최근에는 여기에 더해, 신경망의 직관적 이해, 경사하강법, 역전파, 이진 분류, CNN/RNN/GAN 같은 전통 딥러닝 기초도 함께 잡을 수 있도록 문서 구조를 보강했습니다. 그래서 이 레포는 "LLM만 빠르게 훑는 저장소"가 아니라, 신경망 기초부터 생성형 AI까지 이어지는 학습 베이스를 목표로 합니다.
+**신경망 기초부터 생성형 AI까지, 연결해서 이해하는 학습 저장소**
 
-## 이 문서에서 배우는 것
-- 이 레포가 어떤 목적의 학습 저장소인지 이해한다.
-- 어떤 순서로 읽으면 길을 잃지 않는지 파악한다.
-- 신경망 기초부터 LLM까지 어떤 흐름으로 이어지는지 본다.
+<img src="assets/min-long-long.gif" width="600" />
 
-## 레포 소개
-- 목표: AI 입문자가 전체 지도를 잡고, 실무에서 자주 나오는 개념을 연결해서 이해하도록 돕는 것
-- 방식: Markdown 중심 문서화, 개념 설명 우선, 코드 최소화
-- 특징: 초보자 친화적이지만 너무 얕지 않게, 실무 맥락까지 함께 설명
+[![AI](https://img.shields.io/badge/AI-Fundamentals-FF6F61?style=for-the-badge&logo=openai&logoColor=white)](#-ai-fundamentals)
+[![ML](https://img.shields.io/badge/ML-Machine_Learning-4ECDC4?style=for-the-badge&logo=tensorflow&logoColor=white)](#-machine-learning)
+[![DL](https://img.shields.io/badge/DL-Deep_Learning-6C5CE7?style=for-the-badge&logo=pytorch&logoColor=white)](#-deep-learning)
+[![LLM](https://img.shields.io/badge/LLM-Large_Language_Model-F9CA24?style=for-the-badge&logo=openai&logoColor=black)](#-llm--generative-ai)
+[![RL](https://img.shields.io/badge/RL-Reinforcement_Learning-E17055?style=for-the-badge&logo=probot&logoColor=white)](#-reinforcement-learning)
 
-## 누구를 위한 레포인가
-- AI를 처음 공부하는 입문자
-- 신경망, 역전파, 분류, 최적화 개념이 막연한 사람
-- LLM, RAG, Agent를 유행어가 아니라 구조로 이해하고 싶은 사람
-- 장기적으로 자기만의 AI 노트를 쌓고 싶은 사람
+---
 
-## 어떤 순서로 읽으면 좋은가
-1. `docs/00_AI_roadmap.md`: 전체 지도 먼저 보기
-2. `docs/01_AI_vs_ML_vs_DL.md`: AI, ML, DL 차이 잡기
-3. `docs/02_math_for_ai.md`: 필요한 수학의 역할 이해
-4. `docs/03_machine_learning_basics.md`: 지도/비지도/자기지도/강화학습 흐름
-5. `docs/04_deep_learning_basics.md`: 신경망과 딥러닝의 전체 개요
-6. `docs/13_ai_learning_algorithms.md`: GD, SGD, Adam, PPO, CQL 같은 알고리즘 흐름
-7. `docs/14_neural_network_training_and_classification.md`: weight, bias, backprop, 분류, MLE
-8. `docs/15_classic_deep_learning_architectures.md`: CNN, RNN, GAN, 깊은 신경망의 문제
-9. `docs/05_transformer_and_llm.md`: 트랜스포머와 LLM
-10. `docs/06_prompting_rag_agents.md`
-11. `docs/07_finetuning_vs_rag.md`
-12. `docs/08_evaluation_and_metrics.md`
-13. `docs/09_ai_system_design_basics.md`
-14. `docs/10_glossary.md`
-15. `docs/11_study_plan.md`
-16. `docs/12_projects_i_worked_on.md`
-17. `docs/16_ai_curriculum.md`
+*"개념을 따로따로 외우지 말고, 연결해서 이해하자"*
 
-## 추천 학습 루트
+</div>
 
-### 1. 완전 입문 루트
-- `00` → `01` → `02` → `03` → `04` → `14`
-- 목표: AI의 큰 그림과 신경망 학습 구조 이해
+<br>
 
-### 2. 딥러닝 기초 강화 루트
-- `03` → `04` → `13` → `14` → `15`
-- 목표: 경사하강법, MLP, 분류, 역전파, CNN/RNN/GAN 흐름 이해
+## About
 
-### 3. LLM 중심 루트
-- `00` → `01` → `04` → `13` → `14` → `05` → `06` → `07` → `08`
-- 목표: 신경망 기초 위에서 트랜스포머, RAG, 파인튜닝 차이 이해
+AI를 처음 공부할 때 가장 어려운 건 개념이 너무 많고 서로 어떻게 연결되는지 감이 안 잡힌다는 것.  
+이 레포는 **"정의"보다 "관계"** 중심으로 개념을 정리하는 개인 학습 저장소입니다.
 
-### 4. 실무 감각 루트
-- `00` → `05` → `06` → `07` → `08` → `09` → `12`
-- 목표: 모델 자체보다 시스템과 프로젝트 경험 관점으로 AI 기능 이해
+> **대상** : AI 입문자, 개념 정리가 필요한 학습자  
+> **방식** : Markdown 문서 + 주석 코드, 코드보다 개념 이해 우선  
+> **목표** : 신경망 기초 ~ 생성형 AI까지 이어지는 학습 베이스 구축
 
-## 커리큘럼 반영 포인트
+<br>
 
-| 커리큘럼 주제 | 반영된 문서 |
-| --- | --- |
-| 지도학습, 비지도학습, 자기지도학습, 강화학습 | `03` |
-| 인공신경망, weight, bias, 선형 회귀, Gradient Descent | `04`, `13`, `14` |
-| GD vs SGD, Adam 같은 최적화 기법 | `13`, `14` |
-| MLP, non-linear activation, Backpropagation | `04`, `14` |
-| 이진 분류, 다중 분류, Sigmoid, Likelihood, MLE | `14` |
-| Universal Approximation Theorem, ANN의 한계 | `14`, `15` |
-| CNN, RNN, GAN | `15` |
-| 깊은 신경망의 고질적 문제와 해결 방향 | `15` |
+## Folder Structure
 
-## 문서 구조 안내
-- `README.md`: 레포 사용법과 추천 읽기 순서
-- `docs/00~09`: 핵심 개념 문서
-- `docs/10_glossary.md`: 학습용 용어집
-- `docs/11_study_plan.md`: 실행형 학습 계획
-- `docs/12_projects_i_worked_on.md`: 개인 프로젝트 정리
-- `docs/13_ai_learning_algorithms.md`: 최적화/RL 알고리즘 정리
-- `docs/14~15`: 신경망 학습과 전통 딥러닝 기초 보강 문서
-- `docs/16_ai_curriculum.md`: 모듈형 학습 커리큘럼
-- `examples/`: OpenAI Python 예제 코드
-- `ai-python-study/`: AI Python 함수 학습용 주석 코드
+```
+ai-study/
+├── docs/                  # 핵심 개념 문서 (주제별 번호순)
+├── examples/              # OpenAI Python API 예제
+├── ai-python-study/       # AI Python 함수 학습용 주석 코드
+├── notebooklm/            # NotebookLM 활용 정리
+├── conversation/          # 학습 대화 기록
+├── video/                 # 영상 자료
+└── assets/                # GIF, 이미지 등 미디어
+```
 
-## 이 레포를 어떻게 활용하면 좋은가
-- 처음 1회독은 "완벽히 이해"보다 "지도 익히기"에 집중한다.
-- 신경망이 막히면 `04` → `13` → `14` 순서로 다시 읽는다.
-- CNN, RNN, GAN처럼 이름은 들어봤는데 차이가 흐리면 `15`에서 묶어서 본다.
-- 문서를 읽으며 헷갈리는 용어는 `docs/10_glossary.md` 또는 `docs/AI_용어집_노션용.md`에서 확인한다.
-- 프로젝트를 하다가 개념이 나오면 다시 돌아와 연결해서 읽는다.
-- 새로 배운 내용을 같은 형식의 Markdown으로 계속 추가해 개인 지식 베이스로 확장한다.
+> 앞으로 주제별 폴더(`rl/`, `llm/`, `dl/` 등)를 추가해 나갈 예정입니다.
 
-## 한눈에 정리
+<br>
 
-| 항목 | 이 레포의 방향 |
-| --- | --- |
-| 대상 | AI 입문자, 개념 정리를 원하는 학습자 |
-| 중심 | 개념 이해, 관계 파악, 실무 맥락 |
-| 새로 보강한 축 | 신경망 직관, 최적화, 분류, 고전 딥러닝 아키텍처 |
-| 형식 | Markdown 문서 중심 |
-| 코드 비중 | 낮음 |
-| 추천 방식 | 순서대로 읽고, 자주 다시 돌아오기 |
+## Topics
 
-## 자주 하는 오해
-- "AI는 곧 챗GPT다"라고 생각하기 쉽지만, LLM은 AI의 한 갈래다.
-- 문서를 한 번 읽고 끝내면 안 된다. 이 레포는 반복 참조용이다.
-- 수학을 완벽히 알아야 시작할 수 있는 것은 아니다. 왜 필요한지부터 이해하면 된다.
-- 트랜스포머만 보면 AI를 다 본 것처럼 느끼기 쉽지만, 그 이전의 신경망 기초가 중요하다.
+### AI Fundamentals
 
-## 체크포인트
-- 이 레포가 정의 모음집이 아니라 연결형 학습 저장소라는 점을 이해했는가?
-- 내가 어떤 학습 루트로 읽을지 정할 수 있는가?
-- 경사하강법, 역전파, 분류 같은 기초를 어디서 읽어야 하는지 아는가?
-- 각 문서를 읽은 뒤 체크포인트로 스스로 점검할 준비가 되어 있는가?
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 00 | [AI 로드맵](docs/00_AI_roadmap.md) | 전체 지도 한눈에 보기 |
+| 01 | [AI vs ML vs DL](docs/01_AI_vs_ML_vs_DL.md) | 세 개념의 차이와 포함 관계 |
+| 02 | [수학 기초](docs/02_math_for_ai.md) | AI에 필요한 수학의 역할 |
 
-## 한 줄 요약
-이 레포는 AI 개념을 따로따로 외우지 않고, 신경망 기초부터 생성형 AI까지 연결해서 이해하게 돕는 학습용 지식 베이스다.
+### Machine Learning
 
-## 다음 문서
-- [AI 로드맵](docs/00_AI_roadmap.md)
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 03 | [ML 기초](docs/03_machine_learning_basics.md) | 지도/비지도/자기지도/강화학습 |
+| 13 | [학습 알고리즘](docs/13_ai_learning_algorithms.md) | GD, SGD, Adam, PPO, CQL |
+
+### Deep Learning
+
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 04 | [딥러닝 기초](docs/04_deep_learning_basics.md) | 신경망과 딥러닝 전체 개요 |
+| 14 | [신경망 훈련 & 분류](docs/14_neural_network_training_and_classification.md) | weight, bias, backprop, MLE |
+| 15 | [CNN / RNN / GAN](docs/15_classic_deep_learning_architectures.md) | 고전 딥러닝 아키텍처 |
+
+### LLM & Generative AI
+
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 05 | [Transformer & LLM](docs/05_transformer_and_llm.md) | 트랜스포머 구조와 LLM |
+| 06 | [Prompting / RAG / Agents](docs/06_prompting_rag_agents.md) | 프롬프팅, RAG, 에이전트 |
+| 07 | [Fine-tuning vs RAG](docs/07_finetuning_vs_rag.md) | 두 접근법의 차이 |
+
+### Reinforcement Learning
+
+> 강화학습 심화 문서는 준비 중입니다. 현재 관련 내용은 아래에서 확인할 수 있습니다.
+
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 03 | [ML 기초](docs/03_machine_learning_basics.md) | 강화학습 개요 (지도학습과의 비교) |
+| 13 | [학습 알고리즘](docs/13_ai_learning_algorithms.md) | PPO, CQL 등 RL 알고리즘 |
+
+### System & Practice
+
+| # | 문서 | 핵심 내용 |
+|:-:|------|-----------|
+| 08 | [평가 & 메트릭](docs/08_evaluation_and_metrics.md) | 모델 평가 지표 |
+| 09 | [AI 시스템 설계](docs/09_ai_system_design_basics.md) | 실무 시스템 관점 |
+| 10 | [용어집](docs/10_glossary.md) | 학습용 핵심 용어 |
+| 11 | [학습 계획](docs/11_study_plan.md) | 실행형 스터디 플랜 |
+| 12 | [프로젝트 정리](docs/12_projects_i_worked_on.md) | 개인 프로젝트 기록 |
+| 16 | [커리큘럼](docs/16_ai_curriculum.md) | 모듈형 학습 커리큘럼 |
+
+<br>
+
+## Learning Routes
+
+상황에 맞는 루트를 골라 순서대로 읽어보세요.
+
+```
+ 완전 입문        00 -> 01 -> 02 -> 03 -> 04 -> 14
+                  AI 전체 지도 잡기 + 신경망 학습 구조 이해
+
+ 딥러닝 기초      03 -> 04 -> 13 -> 14 -> 15
+                  경사하강법, MLP, 역전파, CNN/RNN/GAN
+
+ LLM 중심        00 -> 01 -> 04 -> 13 -> 14 -> 05 -> 06 -> 07 -> 08
+                  신경망 기초 위에서 Transformer, RAG, Fine-tuning
+
+ 실무 감각        00 -> 05 -> 06 -> 07 -> 08 -> 09 -> 12
+                  시스템과 프로젝트 경험 관점
+```
+
+<br>
+
+## Code Examples
+
+<details>
+<summary><b>OpenAI Python API 예제</b></summary>
+
+| 파일 | 내용 |
+|------|------|
+| [기초 텍스트 응답](examples/기초%20텍스트%20응답-01.py) | 기본 Chat Completion |
+| [구조화된 출력](examples/구조화된%20출력-02.py) | Structured Output |
+| [이미지 이해](examples/이미지%20이해-03.py) | Vision API |
+| [함수 호출](examples/함수%20호출-04.py) | Function Calling |
+
+</details>
+
+<details>
+<summary><b>AI Python 함수 학습</b></summary>
+
+| 파일 | 내용 |
+|------|------|
+| [수학 & 데이터 헬퍼](ai-python-study/01_math_and_data_helpers.py) | NumPy, 통계 기초 |
+| [훈련 & 메트릭 헬퍼](ai-python-study/02_training_and_metrics_helpers.py) | 학습 루프, 평가 |
+| [NLP & RAG 헬퍼](ai-python-study/03_nlp_and_rag_helpers.py) | 텍스트 처리, 검색 |
+| [LLM 프롬프트 헬퍼](ai-python-study/04_llm_prompt_helpers.py) | 프롬프트 엔지니어링 |
+| [강화학습 헬퍼](ai-python-study/05_reinforcement_learning_helpers.py) | PPO, CQL, return, advantage |
+
+</details>
+
+<br>
+
+## Tips
+
+- 처음엔 "완벽히 이해"보다 **"지도 익히기"** 에 집중하세요
+- 문서를 읽다 막히면 [용어집](docs/10_glossary.md)을 참고하세요
+- 한 번 읽고 끝내지 말고, 프로젝트 하면서 **반복 참조**하세요
+- 새로 배운 내용은 같은 형식으로 계속 추가해서 나만의 지식 베이스로 키우세요
+
+<br>
+
+---
+
+<div align="center">
+
+*계속 업데이트 중입니다*
+
+</div>
