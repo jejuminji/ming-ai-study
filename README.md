@@ -4,7 +4,7 @@
 
 **신경망 기초부터 생성형 AI까지, 연결해서 이해하는 학습 저장소**
 
-<img src="assets/min-long-long.gif" width="600" />
+<img src="assets/min-long-long.gif" width="300" />
 
 [![AI](https://img.shields.io/badge/AI-Fundamentals-FF6F61?style=for-the-badge&logo=openai&logoColor=white)](#-ai-fundamentals)
 [![ML](https://img.shields.io/badge/ML-Machine_Learning-4ECDC4?style=for-the-badge&logo=tensorflow&logoColor=white)](#-machine-learning)
