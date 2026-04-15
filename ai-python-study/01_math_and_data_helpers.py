@@ -22,16 +22,22 @@ def set_seed(seed: int) -> None:
 
 # 이 함수는 데이터를 train 과 validation 으로 나누는 아주 기본적인 버전이다.
 def train_val_split(
+    # 이 매개변수는 분할할 원본 데이터 시퀀스를 받는다.
     items: Sequence,
+    # 이 매개변수는 validation 세트 비율을 실수로 지정한다.
     val_ratio: float = 0.2,
+    # 이 매개변수는 random.shuffle 함수를 써서 섞을지 정한다.
     shuffle: bool = True,
+    # 이 매개변수는 셔플 재현성을 맞추기 위한 random seed 값이다.
     seed: int = 42,
+    # 이 반환 타입 표시는 train 리스트와 validation 리스트 두 개를 튜플로 돌려준다는 뜻이다.
 ) -> Tuple[List, List]:
     # 여기서 items 를 Sequence 로 적은 것은 list 뿐 아니라 tuple 같은
     # "순서가 있는 데이터 묶음"도 받을 수 있다는 뜻이다.
 
     # validation 비율이 0보다 작거나 1보다 크면 잘못된 입력이므로 예외를 발생시킨다.
     if not 0 <= val_ratio <= 1:
+        # ValueError 는 함수 인자가 규칙을 어겼을 때 호출자에게 문제를 알려 주는 예외다.
         raise ValueError("val_ratio must be between 0 and 1.")
 
     # 원본 시퀀스(순서가 있는 데이터 묶음)를 바로 바꾸지 않기 위해 list 로 복사본을 만든다.
@@ -40,7 +46,9 @@ def train_val_split(
     # 데이터 분할 전에 순서를 섞고 싶다면 seed 를 고정한 뒤 shuffle 한다.
     # 같은 seed 로 섞으면 항상 같은 순서가 나오므로 train/validation 결과를 다시 재현할 수 있다.
     if shuffle:
+        # random.seed 함수로 섞기 전에 난수 시작 상태를 고정한다.
         random.seed(seed)
+        # random.shuffle 함수로 copied_items 리스트 자체의 순서를 무작위로 섞는다.
         random.shuffle(copied_items)
 
     # validation 데이터 개수를 계산한다.
@@ -48,6 +56,7 @@ def train_val_split(
 
     # 뒤쪽 val_size 개를 validation 으로 쓰고, 나머지를 train 으로 사용한다.
     train_items = copied_items[:-val_size] if val_size > 0 else copied_items
+    # validation 데이터는 뒤쪽 구간을 슬라이싱해서 뽑고, 크기가 0이면 빈 리스트를 쓴다.
     val_items = copied_items[-val_size:] if val_size > 0 else []
 
     # train 과 validation 리스트를 튜플로 반환한다.
@@ -59,6 +68,7 @@ def train_val_split(
 def batch_iterator(items: Sequence, batch_size: int) -> Iterator[List]:
     # batch 크기가 1보다 작으면 의미가 없으므로 예외를 발생시킨다.
     if batch_size < 1:
+        # ValueError 로 batch_size 인자가 최소 1이어야 한다는 규칙을 알린다.
         raise ValueError("batch_size must be at least 1.")
 
     # 0부터 전체 길이까지 batch_size 간격으로 이동하면서 배치를 만든다.
@@ -75,6 +85,7 @@ def batch_iterator(items: Sequence, batch_size: int) -> Iterator[List]:
 def dot_product(vector_a: Sequence[float], vector_b: Sequence[float]) -> float:
     # 두 벡터 길이가 다르면 내적을 정의하기 어렵기 때문에 예외를 발생시킨다.
     if len(vector_a) != len(vector_b):
+        # 길이가 다르면 zip 으로 짝을 맞춰 곱하는 계산이 어긋나므로 ValueError 를 던진다.
         raise ValueError("Both vectors must have the same length.")
 
     # 각 위치의 값을 곱한 뒤 모두 더해서 내적을 만든다.
@@ -91,6 +102,7 @@ def l2_norm(vector: Sequence[float]) -> float:
 def cosine_similarity(vector_a: Sequence[float], vector_b: Sequence[float]) -> float:
     # 벡터 길이가 다르면 비교할 수 없으므로 예외를 발생시킨다.
     if len(vector_a) != len(vector_b):
+        # cosine similarity 는 같은 차원의 벡터끼리만 비교 가능하므로 ValueError 를 발생시킨다.
         raise ValueError("Both vectors must have the same length.")
 
     # 분자에는 두 벡터의 내적을 넣는다.
@@ -101,6 +113,7 @@ def cosine_similarity(vector_a: Sequence[float], vector_b: Sequence[float]) -> f
 
     # 길이가 0인 벡터가 들어오면 0으로 나누게 되므로 예외를 발생시킨다.
     if denominator == 0:
+        # 영벡터는 방향을 정의하기 어려워 cosine similarity 를 계산할 수 없다는 뜻이다.
         raise ValueError("Cosine similarity is undefined for zero vectors.")
 
     # 내적을 각 길이의 곱으로 나누면 cosine similarity 가 된다.
@@ -127,6 +140,7 @@ def relu(x: float) -> float:
 def softmax(logits: Sequence[float]) -> List[float]:
     # 빈 리스트가 들어오면 계산할 값이 없으므로 예외를 발생시킨다.
     if len(logits) == 0:
+        # softmax 함수는 적어도 하나의 점수가 있어야 확률 분포를 만들 수 있다.
         raise ValueError("logits must not be empty.")
 
     # 수치적으로 더 안정적인 계산을 위해 가장 큰 값을 먼저 뺀다.
@@ -146,14 +160,17 @@ def softmax(logits: Sequence[float]) -> List[float]:
 def min_max_normalize(values: Sequence[float]) -> List[float]:
     # 빈 리스트는 정규화할 수 없으므로 예외를 발생시킨다.
     if len(values) == 0:
+        # min 과 max 함수를 쓰기 전에 데이터가 있는지 ValueError 로 확인한다.
         raise ValueError("values must not be empty.")
 
     # 정규화에 필요한 최소값과 최대값을 구한다.
     min_value = min(values)
+    # max 함수로 전체 값 중 가장 큰 값을 찾아 정규화 분모 계산에 쓴다.
     max_value = max(values)
 
     # 모든 값이 같으면 분모가 0이 되므로, 이 경우 0.0 리스트를 반환한다.
     if min_value == max_value:
+        # 값 차이가 전혀 없을 때는 모든 위치를 0.0 으로 채운 리스트를 바로 반환한다.
         return [0.0 for _ in values]
 
     # 각 값을 (x - min) / (max - min) 공식으로 정규화한다.
@@ -174,6 +191,7 @@ if __name__ == "__main__":
 
     # 분할된 결과를 출력한다.
     print("train_data:", train_data)
+    # validation 분할 결과도 print 함수로 바로 확인한다.
     print("val_data:", val_data)
 
     # batch 단위로 데이터를 묶는 예시를 출력한다.

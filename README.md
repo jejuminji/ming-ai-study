@@ -130,10 +130,10 @@ ai-study/
 
 | 파일 | 내용 |
 |------|------|
-| [기초 텍스트 응답](examples/기초%20텍스트%20응답-01.py) | 기본 Chat Completion |
-| [구조화된 출력](examples/구조화된%20출력-02.py) | Structured Output |
-| [이미지 이해](examples/이미지%20이해-03.py) | Vision API |
-| [함수 호출](examples/함수%20호출-04.py) | Function Calling |
+| [기초 텍스트 응답](examples/basic_text_response_01.py) | 기본 Chat Completion |
+| [구조화된 출력](examples/structured_output_02.py) | Structured Output |
+| [이미지 이해](examples/image_understanding_03.py) | Vision API |
+| [함수 호출](examples/function_calling_04.py) | Function Calling |
 
 </details>
 

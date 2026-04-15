@@ -4,10 +4,10 @@
 
 ## 파일 읽는 순서
 
-1. `기초 텍스트 응답-01.py`
-2. `구조화된 출력-02.py`
-3. `이미지 이해-03.py`
-4. `함수 호출-04.py`
+1. `basic_text_response_01.py`
+2. `structured_output_02.py`
+3. `image_understanding_03.py`
+4. `function_calling_04.py`
 
 ## 실행 전 준비
 

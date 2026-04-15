@@ -1,3 +1,5 @@
+# 이 파일은 OpenAI function calling 흐름과 도구 결과 전달 방식을 익히기 위한 예제 코드다.
+
 # 이 줄은 OpenAI SDK의 클라이언트 클래스를 가져온다.
 from openai import OpenAI
 
@@ -12,8 +14,11 @@ client = OpenAI()
 def get_weather(location: str, unit: str) -> str:
     # 이 줄은 예제를 단순하게 유지하기 위해 하드코딩된 결과를 반환한다.
     fake_weather_data = {
+        # 이 줄은 Seoul 키에 대한 섭씨와 화씨 예시 결과를 담는다.
         "Seoul": {"celsius": "18도, 맑음", "fahrenheit": "64F, sunny"},
+        # 이 줄은 Tokyo 키에 대한 섭씨와 화씨 예시 결과를 담는다.
         "Tokyo": {"celsius": "20도, 흐림", "fahrenheit": "68F, cloudy"},
+        # 이 줄은 fake_weather_data 딕셔너리 정의를 닫는다.
     }
     # 이 줄은 location 이 사전에 있으면 해당 값을 주고, 없으면 기본 문구를 준다.
     return fake_weather_data.get(location, {}).get(unit, "날씨 정보를 찾지 못했습니다.")
@@ -21,6 +26,7 @@ def get_weather(location: str, unit: str) -> str:
 
 # 이 줄은 모델에게 보여 줄 함수 도구 정의 목록이다.
 tools = [
+    # 이 줄은 도구 하나를 설명하는 딕셔너리 블록을 시작한다.
     {
         # 이 줄은 이 도구가 함수형 도구라는 뜻이다.
         "type": "function",
@@ -36,24 +42,35 @@ tools = [
             "properties": {
                 # 이 줄은 location 이 문자열이어야 함을 나타낸다.
                 "location": {
+                    # 이 줄은 location 필드 타입을 string 으로 지정한다.
                     "type": "string",
+                    # 이 줄은 description 키에 location 예시 값을 적는다.
                     "description": "예: Seoul 또는 Tokyo",
+                    # 이 줄은 location 필드 정의 블록을 닫는다.
                 },
                 # 이 줄은 unit 이 문자열이며 선택 가능한 값이 정해져 있음을 나타낸다.
                 "unit": {
+                    # 이 줄은 unit 필드 타입을 string 으로 지정한다.
                     "type": "string",
+                    # 이 줄은 enum 키로 unit 선택 가능 값을 celsius 와 fahrenheit 로 제한한다.
                     "enum": ["celsius", "fahrenheit"],
+                    # 이 줄은 unit 필드 설명 문자열을 적는다.
                     "description": "온도 단위",
+                    # 이 줄은 unit 필드 정의 블록을 닫는다.
                 },
+                # 이 줄은 properties 딕셔너리 정의를 닫는다.
             },
             # 이 줄은 두 필드가 모두 필수라는 뜻이다.
             "required": ["location", "unit"],
             # 이 줄은 정의하지 않은 다른 필드는 받지 않겠다는 뜻이다.
             "additionalProperties": False,
+            # 이 줄은 parameters 스키마 블록을 닫는다.
         },
         # 이 줄은 스키마를 더 엄격하게 따르도록 하는 옵션이다.
         "strict": True,
+        # 이 줄은 함수 도구 딕셔너리 정의를 닫는다.
     }
+    # 이 줄은 tools 리스트 정의를 닫는다.
 ]
 
 # 이 줄은 먼저 모델에게 질문과 함께 사용할 수 있는 도구 목록을 보낸다.
@@ -64,12 +81,14 @@ first_response = client.responses.create(
     input="서울 날씨를 섭씨 기준으로 알려줘.",
     # 이 줄은 모델이 필요하면 호출할 수 있는 함수 목록이다.
     tools=tools,
+    # 이 줄은 첫 번째 client.responses.create 함수 호출을 닫는다.
 )
 
 # 이 줄은 첫 번째 응답 안에 들어 있는 출력 항목들을 순회한다.
 for item in first_response.output:
     # 이 줄은 함수 호출 항목이 아니면 건너뛴다.
     if item.type != "function_call":
+        # continue 로 현재 반복만 넘기고 다음 output 항목을 확인한다.
         continue
 
     # 이 줄은 모델이 함수에 넘기려는 인자 문자열을 파이썬 딕셔너리로 바꾼다.
@@ -77,8 +96,11 @@ for item in first_response.output:
 
     # 이 줄은 실제 파이썬 함수를 실행해서 결과를 만든다.
     tool_result = get_weather(
+        # location 인자에는 JSON에서 꺼낸 도시 이름을 전달한다.
         location=arguments["location"],
+        # unit 인자에는 JSON에서 꺼낸 온도 단위를 전달한다.
         unit=arguments["unit"],
+        # 이 줄은 get_weather 함수 호출 괄호를 닫는다.
     )
 
     # 이 줄은 함수 실행 결과를 다시 모델에게 전달해서 최종 자연어 답변을 받는다.
@@ -89,12 +111,19 @@ for item in first_response.output:
         previous_response_id=first_response.id,
         # 이 줄은 함수 실행 결과를 function_call_output 형식으로 보낸다.
         input=[
+            # 이 줄은 tool output 한 건을 담는 딕셔너리 블록을 연다.
             {
+                # 이 줄은 메시지 타입이 function_call_output 임을 지정한다.
                 "type": "function_call_output",
+                # 이 줄은 어떤 함수 호출 결과인지 식별하는 call_id 를 넣는다.
                 "call_id": item.call_id,
+                # 이 줄은 실제 함수 반환값을 output 필드에 넣는다.
                 "output": tool_result,
+                # 이 줄은 function_call_output 딕셔너리 정의를 닫는다.
             }
+            # 이 줄은 input 리스트 정의를 닫는다.
         ],
+        # 이 줄은 두 번째 client.responses.create 함수 호출을 닫는다.
     )
 
     # 이 줄은 최종적으로 모델이 정리한 자연어 답변을 출력한다.

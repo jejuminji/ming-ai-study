@@ -171,10 +171,10 @@ LLM을 이해하려면 그 전에 신경망이 어떻게 학습되는지 감이 
 
 #### 읽을 문서/폴더
 - `examples/README.md`
-- `examples/기초 텍스트 응답-01.py`
-- `examples/구조화된 출력-02.py`
-- `examples/이미지 이해-03.py`
-- `examples/함수 호출-04.py`
+- `examples/basic_text_response_01.py`
+- `examples/structured_output_02.py`
+- `examples/image_understanding_03.py`
+- `examples/function_calling_04.py`
 - `ai-python-study/README.md`
 - `ai-python-study/01~05` 파일
 

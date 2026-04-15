@@ -1,3 +1,5 @@
+# 이 파일은 OpenAI Responses API로 기본 텍스트 응답을 받는 방법을 익히기 위한 예제 코드다.
+
 # 이 줄은 OpenAI Python SDK에서 OpenAI 클래스를 가져오는 부분이다.
 from openai import OpenAI
 
@@ -12,6 +14,7 @@ response = client.responses.create(
     model="gpt-4.1-mini",
     # 이 줄은 모델에게 전달할 사용자 입력이다.
     input="AI, 머신러닝, 딥러닝의 차이를 초보자도 이해하게 3문장으로 설명해 줘.",
+    # 이 줄은 client.responses.create 함수 호출 괄호를 닫는다.
 )
 
 # 이 줄은 모델이 만든 최종 텍스트를 보기 쉽게 출력한다.

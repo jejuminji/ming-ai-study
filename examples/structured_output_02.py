@@ -1,3 +1,5 @@
+# 이 파일은 OpenAI Responses API에서 구조화된 JSON 출력을 받는 방법을 익히기 위한 예제 코드다.
+
 # 이 줄은 OpenAI SDK의 기본 클라이언트를 가져온다.
 from openai import OpenAI
 
@@ -35,19 +37,27 @@ response = client.responses.create(
                     "why_it_matters": {"type": "string"},
                     # 이 줄은 when_to_use 필드가 문자열 배열이어야 한다는 뜻이다.
                     "when_to_use": {
+                        # 이 줄은 when_to_use 필드의 타입을 array 로 지정한다.
                         "type": "array",
+                        # 이 줄은 배열 안 각 항목의 타입을 string 으로 지정한다.
                         "items": {"type": "string"},
+                        # 이 줄은 when_to_use 배열 필드 정의 블록을 닫는다.
                     },
+                    # 이 줄은 properties 딕셔너리 정의를 마무리한다.
                 },
                 # 이 줄은 반드시 들어와야 하는 필드를 지정한다.
                 "required": ["concept", "why_it_matters", "when_to_use"],
                 # 이 줄은 정의하지 않은 다른 필드는 허용하지 않겠다는 뜻이다.
                 "additionalProperties": False,
+                # 이 줄은 schema 객체 정의를 닫는다.
             },
             # 이 줄은 모델이 스키마를 더 엄격하게 따르도록 하는 옵션이다.
             "strict": True,
+            # 이 줄은 format 설정 블록을 닫는다.
         }
+        # 이 줄은 text 인자에 전달하는 딕셔너리를 닫는다.
     },
+    # 이 줄은 client.responses.create 함수 호출 괄호를 닫는다.
 )
 
 # 이 줄은 모델이 반환한 JSON 텍스트를 파이썬 딕셔너리로 바꾼다.
